@@ -6,7 +6,11 @@
         <button class="nav-button" @click="showComponent('post')">Post</button>
       </nav>
     </header>
-    <ToDoList v-if="currentComponent === 'todos'" />
+    <ToDoList v-if="currentComponent === 'todos'" @todo-added="handleTodoAdded">
+      <template v-slot:header>
+        <span>Custom To-Do List Header</span>
+      </template>
+    </ToDoList>
     <div v-if="currentComponent === 'post'" class="post-section">
       <select v-model="selectedUserId" @change="fetchPosts">
         <option value="" disabled>Pilih pengguna</option>
@@ -64,6 +68,9 @@ export default {
       } else {
         this.posts = [];
       }
+    },
+    handleTodoAdded(todo) {
+      console.log("Todo added:", todo);
     },
   },
 };

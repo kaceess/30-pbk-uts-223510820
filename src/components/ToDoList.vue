@@ -2,7 +2,7 @@
   <div class="container mt-4" style="max-width: 30em;">
     <div class="card shadow-lg bg-light">
       <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <span>To-Do List</span>
+        <slot name="header">To-Do List</slot>
         <form @submit.prevent="addTodo" class="d-flex align-items-center">
           <input
             v-model="newTodo"
@@ -97,21 +97,29 @@
 <script>
 export default {
   name: "ToDoList",
+  props: {
+    initialTodos: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       newTodo: "",
-      todos: [],
+      todos: this.initialTodos,
       filter: null,
     };
   },
   methods: {
     addTodo() {
       if (this.newTodo.trim()) {
-        this.todos.push({
+        const todo = {
           title: this.newTodo,
           done: false,
-        });
+        };
+        this.todos.push(todo);
         this.newTodo = "";
+        this.$emit('todo-added', todo);
       }
     },
     removeTodo(todo) {
@@ -164,6 +172,6 @@ export default {
 }
 
 .form-check-input {
-  transform: scale(1.2); /* Membuat kotak centang lebih besar */
+  transform: scale(1.2);
 }
 </style>
