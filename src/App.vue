@@ -1,133 +1,110 @@
 <template>
-  <div>
+  <div class="app-container">
+    <!-- Navbar -->
     <header>
       <nav>
-        <button class="nav-button" @click="showComponent('todos')">Todos</button>
-        <button class="nav-button" @click="showComponent('post')">Post</button>
+        <router-link to="/todos" class="nav-button">Todos</router-link>
+        <router-link to="/post" class="nav-button">Post</router-link>
+        <router-link to="/album" class="nav-button">Album Foto</router-link>
+        <button class="nav-button back-button" @click="goBack">Kembali</button>
       </nav>
     </header>
-    <ToDoList v-if="currentComponent === 'todos'" @todo-added="handleTodoAdded">
-      <template v-slot:header>
-        <span>Custom To-Do List Header</span>
-      </template>
-    </ToDoList>
-    <div v-if="currentComponent === 'post'" class="post-section">
-      <select v-model="selectedUserId" @change="fetchPosts">
-        <option value="" disabled>Pilih pengguna</option>
-        <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
-      </select>
-      <ul class="post-list">
-        <li v-for="post in posts" :key="post.id" class="post-item">
-          <h3>{{ post.title }}</h3>
-          <p>{{ post.body }}</p>
-        </li>
-      </ul>
-    </div>
+    <!-- Dynamic Content -->
+    <router-view />
   </div>
 </template>
 
 <script>
-import ToDoList from "@/components/ToDoList";
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useMainStore } from '@/stores/index'; // Pastikan path ke store benar
 
 export default {
-  name: "App",
-  components: {
-    ToDoList,
-  },
-  data() {
+  name: 'App',
+  setup() {
+    const store = useMainStore();
+    const route = useRoute();
+    const router = useRouter();
+
+    // Current component based on route
+    const currentComponent = computed(() => route.path !== '/');
+
+    // Fetch users when component is created
+    store.fetchUsers();
+
+    // Method to go back
+    function goBack() {
+      // Directly go to the initial page ("/")
+      router.push('/');
+    }
+
     return {
-      currentComponent: 'todos',
-      users: [],
-      posts: [],
-      selectedUserId: "",
+      store,
+      currentComponent,
+      goBack
     };
-  },
-  created() {
-    this.fetchUsers();
-  },
-  methods: {
-    showComponent(component) {
-      this.currentComponent = component;
-    },
-    async fetchUsers() {
-      try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        this.users = await response.json();
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
-    async fetchPosts() {
-      if (this.selectedUserId) {
-        try {
-          const response = await fetch(`https://jsonplaceholder.typicode.com/posts?userId=${this.selectedUserId}`);
-          this.posts = await response.json();
-        } catch (error) {
-          console.error("Error fetching posts:", error);
-        }
-      } else {
-        this.posts = [];
-      }
-    },
-    handleTodoAdded(todo) {
-      console.log("Todo added:", todo);
-    },
-  },
+  }
 };
 </script>
 
 <style>
-header {
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app-container {
+  background-color: #ffe4e1; /* Latar belakang pink yang lembut */
+  min-height: 100vh;
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  width: 100%;
+  background-color: #ffc0cb; /* Warna pink untuk header */
+  padding: 10px 0;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .nav-button {
   padding: 10px 20px;
   cursor: pointer;
-  background-color: pink;
+  background-color: #ff69b4; /* Warna pink untuk tombol */
   border: none;
   color: white;
   border-radius: 5px;
-  margin: 0 10px;
+  text-decoration: none; /* Hindari underline pada router-link */
 }
 
 .nav-button:hover {
+  background-color: #ff1493; /* Warna pink lebih gelap untuk hover */
+}
+
+.welcome-container {
+  text-align: center;
+  margin-top: 20%;
+}
+
+.welcome-message {
+  font-size: 30px;
+  color: #333;
+  margin-bottom: 20px;
+  font-style: italic; /* Menerapkan gaya font menjadi italic */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Memilih font yang estetis */
+}
+
+.back-button {
   background-color: #ff69b4;
 }
 
-.post-section {
-  padding: 20px;
-}
-
-select {
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.post-list {
-  list-style: none;
-  padding: 0;
-}
-
-.post-item {
-  padding: 15px;
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.post-item h3 {
-  margin: 0;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.post-item p {
-  margin: 0;
-  color: #666;
+.back-button:hover {
+  background-color: #ff1493;
 }
 </style>

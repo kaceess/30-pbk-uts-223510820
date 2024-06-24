@@ -61,32 +61,68 @@
 
         <ul class="list-group list-group-flush">
           <li
-            class="list-group-item d-flex align-items-center justify-content-between"
             v-for="(todo, index) in filteredTodos"
             :key="index"
-            :class="{ 'text-muted': todo.done, 'text-decoration-line-through': todo.done }"
+            :class="['list-group-item', { 'text-muted': todo.done, 'text-decoration-line-through': todo.done }]"
           >
-            <div>
-              <input
-                class="form-check-input"
-                type="checkbox"
-                v-model="todo.done"
-                :id="'todo-' + index"
-              />
-              <label
-                class="ms-2"
-                :for="'todo-' + index"
-              >
-                {{ todo.title }}
-              </label>
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="todo.done"
+                  :id="'todo-' + index"
+                />
+              </div>
+              <div>
+                <label
+                  class="ms-2"
+                  :for="'todo-' + index"
+                >
+                  <span :class="{ 'text-muted': todo.done, 'text-decoration-line-through': todo.done }">{{ todo.title }}</span>
+                </label>
+              </div>
+              <div>
+                <button
+                  @click="editTodo(todo)"
+                  class="btn btn-outline-primary btn-sm me-2"
+                  title="Edit todo"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  @click="removeTodo(todo)"
+                  class="btn btn-danger btn-sm"
+                  title="Remove todo"
+                >
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+              </div>
             </div>
-            <button
-              @click="removeTodo(todo)"
-              class="btn btn-danger btn-sm"
-              title="Remove todo"
-            >
-              <i class="bi bi-trash-fill"></i>
-            </button>
+            <!-- Edit form -->
+            <form v-if="editingTodoIndex === index" @submit.prevent="saveEditedTodo">
+              <input
+                v-model="editedTodo.title"
+                type="text"
+                class="form-control form-control-sm"
+                required
+              />
+              <div class="mt-2">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-sm me-2"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  @click="cancelEdit"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </li>
         </ul>
       </div>
@@ -108,6 +144,11 @@ export default {
       newTodo: "",
       todos: this.initialTodos,
       filter: null,
+      editingTodoIndex: -1,
+      editedTodo: {
+        title: "",
+        done: false,
+      },
     };
   },
   methods: {
@@ -127,6 +168,23 @@ export default {
       if (index >= 0) {
         this.todos.splice(index, 1);
       }
+    },
+    editTodo(todo) {
+      this.editingTodoIndex = this.todos.indexOf(todo);
+      this.editedTodo.title = todo.title;
+      this.editedTodo.done = todo.done;
+    },
+    saveEditedTodo() {
+      if (this.editedTodo.title.trim()) {
+        this.todos[this.editingTodoIndex].title = this.editedTodo.title;
+        this.todos[this.editingTodoIndex].done = this.editedTodo.done;
+        this.cancelEdit();
+      }
+    },
+    cancelEdit() {
+      this.editingTodoIndex = -1;
+      this.editedTodo.title = "";
+      this.editedTodo.done = false;
     },
     allDone() {
       this.todos.forEach((todo) => {
@@ -157,6 +215,7 @@ export default {
 <style>
 .text-decoration-line-through {
   text-decoration: line-through;
+  opacity: 0.6; /* Mengatur opasitas untuk teks yang tercoret */
 }
 
 .card-header {
