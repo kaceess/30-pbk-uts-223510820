@@ -16,7 +16,6 @@ export default {
   setup() {
     const route = useRoute()
 
-    // Determine if current route is the home route
     const isHomeRoute = computed(() => {
       return route.matched.some((record) => record.path === '/' || record.path === '/home')
     })
@@ -35,7 +34,7 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 50vh;
-  background-color: #ffe4e1; /* Latar belakang pink yang lembut */
+  background-color: #ffe4e1;
 }
 
 .welcome-container {
@@ -48,21 +47,21 @@ export default {
   color: #333;
   margin-top: 6rem;
   margin-bottom: 20px;
-  font-style: italic; /* Menerapkan gaya font menjadi italic */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Memilih font yang estetis */
+  font-style: italic; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .nav-button {
   padding: 10px 20px;
   cursor: pointer;
-  background-color: #ff69b4; /* Warna pink untuk tombol */
+  background-color: #ff69b4;
   border: none;
   color: white;
   border-radius: 5px;
-  text-decoration: none; /* Hindari underline pada router-link */
+  text-decoration: none;
 }
 
 .nav-button:hover {
-  background-color: #ff1493; /* Warna pink lebih gelap untuk hover */
+  background-color: #ff1493; 
 }
 </style>

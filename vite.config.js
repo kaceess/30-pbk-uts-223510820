@@ -6,7 +6,6 @@ import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
 
 export default defineConfig({
   define: {
-    // Sesuaikan dengan kebutuhan aplikasi, disarankan false untuk mode produksi
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
   },
   plugins: [
@@ -20,7 +19,6 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      // Menyesuaikan dengan alamat root direktori src
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }

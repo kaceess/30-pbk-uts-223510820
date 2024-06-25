@@ -4,7 +4,7 @@
     <div class="photo-list">
       <div v-for="photo in photos" :key="photo.id" class="photo-item">
         <a :href="photo.url" target="_blank">
-          <img :src="photo.thumbnailUrl" :alt="photo.title">
+          <img :src="photo.thumbnailUrl" :alt="photo.title" loading="lazy">
         </a>
       </div>
     </div>
@@ -23,15 +23,20 @@ export default {
     };
   },
   async created() {
+    const startTime = performance.now();
     try {
       const response = await axios.get(`https://jsonplaceholder.typicode.com/photos?albumId=${this.albumId}`);
       this.photos = response.data;
     } catch (error) {
       console.error('Error fetching photos:', error);
+    } finally {
+      const endTime = performance.now();
+      console.log(`Time taken to fetch photos: ${endTime - startTime} ms`);
     }
   }
 };
 </script>
+
 
 <style scoped>
 .photos-container {

@@ -22,9 +22,9 @@ export default {
 
   data() {
     return {
-      users: [],         // Inisialisasi users sebagai array kosong
+      users: [],        
       posts: [],
-      selectedUser: null // Inisialisasi selectedUser sebagai null
+      selectedUser: null 
     };
   },
 
@@ -45,7 +45,7 @@ export default {
         this.users = data;
 
         // Set selectedUser default ke null atau option disabled
-        this.selectedUser = ''; // Menggunakan string kosong untuk memilih opsi "Pilih Pengguna"
+        this.selectedUser = ''; 
       } catch (error) {
         console.error('Error fetching users:', error);
       }

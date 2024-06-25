@@ -215,7 +215,7 @@ export default {
 <style>
 .text-decoration-line-through {
   text-decoration: line-through;
-  opacity: 0.6; /* Mengatur opasitas untuk teks yang tercoret */
+  opacity: 0.6;
 }
 
 .card-header {
